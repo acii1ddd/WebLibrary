@@ -10,4 +10,3 @@ public class Author
 
     public ICollection<Book> Books = [];
 }
-
