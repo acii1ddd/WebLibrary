@@ -6,7 +6,7 @@ namespace WebLibrary.DAL.Repositories;
 public class BookRepository : IBookRepository
 {
     private readonly List<Book> _items = [];
-    private readonly Lock _lock = new Lock();
+    private readonly Lock _lock = new();
 
     public Task<IEnumerable<Book>> GetAllAsync()
     {

@@ -6,7 +6,7 @@ namespace WebLibrary.DAL.Repositories;
 public class AuthorRepository : IRepository<Author>
 {
     private readonly List<Author> _items = [];
-    private readonly Lock _lock = new Lock();
+    private readonly Lock _lock = new();
 
     public Task<IEnumerable<Author>> GetAllAsync()
     {
