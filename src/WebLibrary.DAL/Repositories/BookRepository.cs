@@ -25,22 +25,22 @@ public class BookRepository : IBookRepository
         }
     }
 
-    public Task AddAsync(Book entity)
+    public Task AddAsync(Book book)
     {
         lock (_lock)
         {
-            _items.Add(entity);
+            _items.Add(book);
             return Task.CompletedTask;
         }
     }
 
-    public Task UpdateAsync(Book entity)
+    public Task UpdateAsync(Book book)
     {
         lock (_lock)
         {
-            var itemIndex = _items.FindIndex(x => x.Id == entity.Id);
+            var itemIndex = _items.FindIndex(x => x.Id == book.Id);
             if (itemIndex >= 0)
-                _items[itemIndex] = entity;
+                _items[itemIndex] = book;
         
             return Task.CompletedTask;   
         }

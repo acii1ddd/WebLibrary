@@ -8,10 +8,17 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9"/>
+        <PackageReference Include="Scalar.AspNetCore" Version="2.9.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\WebLibrary.BLL\WebLibrary.BLL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Contracts\Authors\Responses\" />
+      <Folder Include="Contracts\Books\Requests\" />
+      <Folder Include="Contracts\Books\Responses\" />
     </ItemGroup>
 
 </Project>

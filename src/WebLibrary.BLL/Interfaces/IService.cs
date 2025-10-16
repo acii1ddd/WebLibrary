@@ -6,9 +6,9 @@ public interface IService<T>
 
     public Task<T?> GetByIdAsync(Guid id);
     
-    public Task AddAsync(T entity);
+    public Task AddAsync(T author);
     
-    public Task UpdateAsync(T entity);
+    public Task UpdateAsync(T author);
     
-    public Task DeleteAsync(T entity);
+    public Task DeleteAsync(Guid id);
 }

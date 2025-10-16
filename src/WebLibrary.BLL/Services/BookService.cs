@@ -4,7 +4,7 @@ using WebLibrary.DAL.Models;
 
 namespace WebLibrary.BLL.Services;
 
-public class BookService(IBookRepository bookRepository) : IService<Book>
+public class BookService(IBookRepository bookRepository) : IBookService
 {
     public Task<IEnumerable<Book>> GetAllAsync()
     {
@@ -16,18 +16,18 @@ public class BookService(IBookRepository bookRepository) : IService<Book>
         return bookRepository.GetByIdAsync(id);      
     }
 
-    public Task AddAsync(Book entity)
+    public Task AddAsync(Book book)
     {
-        return bookRepository.AddAsync(entity);
+        return bookRepository.AddAsync(book);
     }
 
-    public Task UpdateAsync(Book entity)
+    public Task UpdateAsync(Book book)
     {
-        return bookRepository.UpdateAsync(entity);
+        return bookRepository.UpdateAsync(book);
     }
 
-    public Task DeleteAsync(Book entity)
+    public Task DeleteAsync(Guid id)
     {
-        return bookRepository.DeleteByIdAsync(entity.Id);
+        return bookRepository.DeleteByIdAsync(id);
     }
 }

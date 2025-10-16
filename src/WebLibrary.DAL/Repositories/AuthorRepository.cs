@@ -3,7 +3,7 @@ using WebLibrary.DAL.Models;
 
 namespace WebLibrary.DAL.Repositories;
 
-public class AuthorRepository : IRepository<Author>
+public class AuthorRepository : IAuthorRepository
 {
     private readonly List<Author> _items = [];
     private readonly Lock _lock = new();
@@ -25,22 +25,22 @@ public class AuthorRepository : IRepository<Author>
         }
     }
 
-    public Task AddAsync(Author entity)
+    public Task AddAsync(Author author)
     {
         lock (_lock)
         {
-            _items.Add(entity);
+            _items.Add(author);
             return Task.CompletedTask;
         }
     }
 
-    public Task UpdateAsync(Author entity)
+    public Task UpdateAsync(Author author)
     {
         lock (_lock)
         {
-            var itemIndex = _items.FindIndex(x => x.Id == entity.Id);
+            var itemIndex = _items.FindIndex(x => x.Id == author.Id);
             if (itemIndex >= 0)
-                _items[itemIndex] = entity;
+                _items[itemIndex] = author;
         
             return Task.CompletedTask;   
         }
