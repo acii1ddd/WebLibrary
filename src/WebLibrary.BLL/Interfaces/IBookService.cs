@@ -7,11 +7,11 @@ public interface IBookService
 {
     public Task<IEnumerable<Book>> GetAllAsync();
 
-    public Task<Book?> GetByIdAsync(Guid id);
+    public Task<Book> GetByIdAsync(Guid id);
     
-    public Task AddAsync(AddBookRequest author);
+    public Task<Guid> AddAsync(AddBookRequest author);
     
-    public Task UpdateAsync(UpdateBookRequest author);
+    public Task UpdateAsync(UpdateBookRequest author, Guid id);
     
     public Task DeleteAsync(Guid id);
 }

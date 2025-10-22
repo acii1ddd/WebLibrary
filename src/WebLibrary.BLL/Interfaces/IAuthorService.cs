@@ -7,7 +7,7 @@ public interface IAuthorService
 {
     public Task<IEnumerable<Author>> GetAllAsync();
 
-    public Task<Author?> GetByIdAsync(Guid id);
+    public Task<Author> GetByIdAsync(Guid id);
     
     public Task<Guid> AddAsync(AddAuthorRequest author);
     

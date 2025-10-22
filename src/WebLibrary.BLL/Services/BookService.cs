@@ -1,4 +1,5 @@
 using WebLibrary.API.Contracts.Contracts.Books.Requests;
+using WebLibrary.BLL.Exceptions;
 using WebLibrary.BLL.Interfaces;
 using WebLibrary.DAL.Interfaces;
 using WebLibrary.DAL.Models;
@@ -7,38 +8,59 @@ namespace WebLibrary.BLL.Services;
 
 public class BookService(IBookRepository bookRepository) : IBookService
 {
-    public Task<IEnumerable<Book>> GetAllAsync()
+    public async Task<IEnumerable<Book>> GetAllAsync()
     {
-        return bookRepository.GetAllAsync();
+        return await bookRepository.GetAllAsync();
     }
 
-    public Task<Book?> GetByIdAsync(Guid id)
+    public async Task<Book> GetByIdAsync(Guid id)
     {
-        return bookRepository.GetByIdAsync(id);      
+        var book = await bookRepository.GetByIdAsync(id);
+
+        if (book is null)
+            throw new NotFoundException("Book", id);
+        
+        return book;  
     }
 
-    public Task AddAsync(AddBookRequest author)
+    public async Task<Guid> AddAsync(AddBookRequest book)
     {
-        throw new NotImplementedException();
+        var newBook = new Book
+        {
+            Id = Guid.NewGuid(),
+            Title = book.Title,
+            PublishedYear = book.PublishedYear
+        };
+        
+        await bookRepository.AddAsync(newBook);
+        
+        return newBook.Id;
     }
 
-    public Task UpdateAsync(UpdateBookRequest author)
+    public async Task UpdateAsync(UpdateBookRequest updateBookRequest, Guid id)
     {
-        throw new NotImplementedException();
+        var book = await bookRepository.GetByIdAsync(id);
+
+        if (book is null)
+            throw new NotFoundException("Book", id);
+        
+        var updatedBook = new Book
+        {
+            Id = id,
+            Title = book.Title,
+            PublishedYear = book.PublishedYear
+        };
+        
+        await bookRepository.UpdateAsync(updatedBook);
     }
 
-    public Task AddAsync(Book book)
+    public async Task DeleteAsync(Guid id)
     {
-        return bookRepository.AddAsync(book);
-    }
+        var book = await bookRepository.GetByIdAsync(id);
 
-    public Task UpdateAsync(Book book)
-    {
-        return bookRepository.UpdateAsync(book);
-    }
-
-    public Task DeleteAsync(Guid id)
-    {
-        return bookRepository.DeleteByIdAsync(id);
+        if (book is null)
+            throw new NotFoundException("Book", id);
+        
+        await bookRepository.DeleteByIdAsync(id);
     }
 }

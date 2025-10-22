@@ -13,7 +13,7 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         return authorRepository.GetAllAsync();
     }
 
-    public async Task<Author?> GetByIdAsync(Guid id)
+    public async Task<Author> GetByIdAsync(Guid id)
     {
         var author = await authorRepository.GetByIdAsync(id);
 
