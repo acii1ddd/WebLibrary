@@ -6,9 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\WebLibrary.API.Contracts\WebLibrary.API.Contracts.csproj" />
-      <ProjectReference Include="..\WebLibrary.DAL\WebLibrary.DAL.csproj" />
-    </ItemGroup>
-
 </Project>

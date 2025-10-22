@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebLibrary.DAL", "src/WebLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebLibrary.BLL", "src/WebLibrary.BLL\WebLibrary.BLL.csproj", "{B7A1B686-6436-4825-966F-97A3BD3D2897}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebLibrary.API.Contracts", "WebLibrary.API.Contracts\WebLibrary.API.Contracts.csproj", "{73A1738D-4981-4E45-A74E-60975D85BFCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{B7A1B686-6436-4825-966F-97A3BD3D2897}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7A1B686-6436-4825-966F-97A3BD3D2897}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7A1B686-6436-4825-966F-97A3BD3D2897}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73A1738D-4981-4E45-A74E-60975D85BFCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73A1738D-4981-4E45-A74E-60975D85BFCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73A1738D-4981-4E45-A74E-60975D85BFCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73A1738D-4981-4E45-A74E-60975D85BFCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

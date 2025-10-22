@@ -13,6 +13,7 @@ public class AuthorController(IAuthorService authorService) : ControllerBase
     public async Task<IActionResult> GetAllAsync()
     {
         var authors = await authorService.GetAllAsync();
+        
         return Ok(authors);
     }
 
@@ -21,42 +22,25 @@ public class AuthorController(IAuthorService authorService) : ControllerBase
     {
         var author = await authorService.GetByIdAsync(id);
         
-        if (author is null)
-            return NotFound();
-        
         return Ok(author);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync([FromBody] AddAuthorRequest entity)
+    public async Task<IActionResult> AddAsync([FromBody] AddAuthorRequest addAuthorRequest)
     {
-        var author = new Author
-        {
-            Id = Guid.NewGuid(),
-            Name = entity.Name,
-            DateOfBirth = entity.DateOfBirth
-        };
+        var authorId = await authorService.AddAsync(addAuthorRequest);
         
-        await authorService.AddAsync(author);
-        
-        return Ok();
+        return Created($"api/authors/{authorId}", new {id = authorId});
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateAsync(
-        [FromBody] UpdateAuthorRequest entity, 
+        [FromBody] UpdateAuthorRequest updateAuthorRequest, 
         [FromRoute] Guid id)
     {
-        var author = new Author
-        {
-            Id = id,
-            Name = entity.Name,
-            DateOfBirth = entity.DateOfBirth
-        };
+        await authorService.UpdateAsync(updateAuthorRequest, id);
         
-        await authorService.UpdateAsync(author);
-        
-        return Ok();
+        return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
@@ -64,6 +48,6 @@ public class AuthorController(IAuthorService authorService) : ControllerBase
     {
         await authorService.DeleteAsync(id);
         
-        return Ok();
+        return NoContent();
     }
 }

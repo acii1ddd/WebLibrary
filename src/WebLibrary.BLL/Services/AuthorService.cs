@@ -1,3 +1,5 @@
+using WebLibrary.API.Contracts.Authors.Requests;
+using WebLibrary.BLL.Exceptions;
 using WebLibrary.BLL.Interfaces;
 using WebLibrary.DAL.Interfaces;
 using WebLibrary.DAL.Models;
@@ -11,23 +13,54 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         return authorRepository.GetAllAsync();
     }
 
-    public Task<Author?> GetByIdAsync(Guid id)
+    public async Task<Author?> GetByIdAsync(Guid id)
     {
-        return authorRepository.GetByIdAsync(id);
+        var author = await authorRepository.GetByIdAsync(id);
+
+        if (author == null)
+            throw new NotFoundException("Author", id);
+        
+        return author;
     }
 
-    public Task AddAsync(Author author)
+    public async Task<Guid> AddAsync(AddAuthorRequest authorRequest)
     {
-        return authorRepository.AddAsync(author);
+        var author = new Author
+        {
+            Id = Guid.NewGuid(),
+            Name = authorRequest.Name,
+            DateOfBirth = authorRequest.DateOfBirth
+        };
+        
+        await authorRepository.AddAsync(author);
+        
+        return author.Id;
     }
 
-    public Task UpdateAsync(Author author)
+    public async Task UpdateAsync(UpdateAuthorRequest updateAuthorRequest, Guid id)
     {
-        return authorRepository.UpdateAsync(author);
+        var authorToUpdate = await authorRepository.GetByIdAsync(id);
+
+        if (authorToUpdate is null)
+            throw new NotFoundException("Author", id);
+        
+        var updatedAuthor = new Author
+        {
+            Id = id,
+            Name = updateAuthorRequest.Name,
+            DateOfBirth = updateAuthorRequest.DateOfBirth
+        };
+        
+        await authorRepository.UpdateAsync(updatedAuthor);
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        return authorRepository.DeleteByIdAsync(id);
+        var author = await authorRepository.GetByIdAsync(id);
+
+        if (author is null)
+            throw new NotFoundException("Author", id);
+        
+        await authorRepository.DeleteByIdAsync(id);
     }
 }

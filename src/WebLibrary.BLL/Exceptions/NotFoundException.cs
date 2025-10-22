@@ -1,6 +1,13 @@
 namespace WebLibrary.BLL.Exceptions;
 
-public class NotFoundException
+public class NotFoundException : Exception
 {
-    
+    public NotFoundException(string msg) : base(msg)
+    {
+    }
+
+    public NotFoundException(string name, Guid key) 
+        : base($"Entity \"{name}\" with key ({key}) was not found.")
+    {
+    }
 }

@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Diagnostics;
 using Scalar.AspNetCore;
+using WebLibrary.API.ExceptionHandlers;
 using WebLibrary.BLL;
 using WebLibrary.DAL;
 
@@ -19,6 +21,8 @@ public class Program
         
         builder.Services.AddServices();
         builder.Services.AddRepositories();
+
+        builder.Services.AddExceptionHandler<CustomExceptionHandler>();
         
         var app = builder.Build();
 
@@ -29,6 +33,7 @@ public class Program
             app.MapScalarApiReference();
         }
 
+        app.UseExceptionHandler(opt => {});
         app.MapControllers();
 
         app.UseHttpsRedirection();
