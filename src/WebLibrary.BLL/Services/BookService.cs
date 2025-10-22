@@ -47,8 +47,8 @@ public class BookService(IBookRepository bookRepository) : IBookService
         var updatedBook = new Book
         {
             Id = id,
-            Title = book.Title,
-            PublishedYear = book.PublishedYear
+            Title = updateBookRequest.Title,
+            PublishedYear = updateBookRequest.PublishedYear
         };
         
         await bookRepository.UpdateAsync(updatedBook);
