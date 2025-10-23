@@ -1,4 +1,4 @@
-using WebLibrary.API.Contracts.Authors.Requests;
+using WebLibrary.API.Contracts.Contracts.Authors.Requests;
 using WebLibrary.BLL.Exceptions;
 using WebLibrary.BLL.Interfaces;
 using WebLibrary.DAL.Interfaces;
@@ -23,13 +23,15 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         return author;
     }
 
-    public async Task<Guid> AddAsync(AddAuthorRequest authorRequest)
+    public async Task<Guid> AddAsync(AddAuthorRequest addAuthorRequest)
     {
+        addAuthorRequest.Validate();
+        
         var author = new Author
         {
             Id = Guid.NewGuid(),
-            Name = authorRequest.Name,
-            DateOfBirth = authorRequest.DateOfBirth
+            Name = addAuthorRequest.Name,
+            DateOfBirth = addAuthorRequest.DateOfBirth
         };
         
         await authorRepository.AddAsync(author);
@@ -39,6 +41,8 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
 
     public async Task UpdateAsync(UpdateAuthorRequest updateAuthorRequest, Guid id)
     {
+        updateAuthorRequest.Validate();
+        
         var authorToUpdate = await authorRepository.GetByIdAsync(id);
 
         if (authorToUpdate is null)

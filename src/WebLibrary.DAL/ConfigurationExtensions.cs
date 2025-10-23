@@ -8,7 +8,7 @@ public static class ConfigurationExtensions
 {
     public static void AddRepositories(this IServiceCollection services)
     {
-        services.AddSingleton<IAuthorRepository, AuthorRepository>();
-        services.AddSingleton<IBookRepository, BookRepository>();
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
+        services.AddScoped<IBookRepository, BookRepository>();
     }
 }

@@ -8,7 +8,7 @@ public static class ConfigurationExtensions
 {
     public static void AddServices(this IServiceCollection services)
     {
-        services.AddScoped<IAuthorService, AuthorService>();
+        services.AddTransient<IAuthorService, AuthorService>();
         services.AddScoped<IBookService, BookService>();
     }
 }

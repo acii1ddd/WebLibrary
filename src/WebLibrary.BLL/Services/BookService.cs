@@ -23,13 +23,15 @@ public class BookService(IBookRepository bookRepository) : IBookService
         return book;  
     }
 
-    public async Task<Guid> AddAsync(AddBookRequest book)
+    public async Task<Guid> AddAsync(AddBookRequest addBookRequest)
     {
+        addBookRequest.Validate();
+        
         var newBook = new Book
         {
             Id = Guid.NewGuid(),
-            Title = book.Title,
-            PublishedYear = book.PublishedYear
+            Title = addBookRequest.Title,
+            PublishedYear = addBookRequest.PublishedYear
         };
         
         await bookRepository.AddAsync(newBook);
@@ -39,6 +41,8 @@ public class BookService(IBookRepository bookRepository) : IBookService
 
     public async Task UpdateAsync(UpdateBookRequest updateBookRequest, Guid id)
     {
+        updateBookRequest.Validate();
+        
         var book = await bookRepository.GetByIdAsync(id);
 
         if (book is null)

@@ -1,4 +1,4 @@
-using WebLibrary.API.Contracts.Authors.Requests;
+using WebLibrary.API.Contracts.Contracts.Authors.Requests;
 using WebLibrary.DAL.Models;
 
 namespace WebLibrary.BLL.Interfaces;
