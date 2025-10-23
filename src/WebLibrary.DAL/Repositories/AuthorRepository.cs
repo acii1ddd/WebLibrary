@@ -5,14 +5,14 @@ namespace WebLibrary.DAL.Repositories;
 
 public class AuthorRepository : IAuthorRepository
 {
-    private readonly List<Author> _items = [];
+    private static readonly List<Author> Items = [];
     private readonly Lock _lock = new();
 
     public Task<IEnumerable<Author>> GetAllAsync()
     {
         lock (_lock)
         {
-            return Task.FromResult(_items.AsEnumerable());
+            return Task.FromResult(Items.AsEnumerable());
         }
     }
 
@@ -20,7 +20,7 @@ public class AuthorRepository : IAuthorRepository
     {
         lock (_lock)
         {
-            var item = _items.FirstOrDefault(x => x.Id == id);
+            var item = Items.FirstOrDefault(x => x.Id == id);
             return Task.FromResult(item);    
         }
     }
@@ -29,7 +29,7 @@ public class AuthorRepository : IAuthorRepository
     {
         lock (_lock)
         {
-            _items.Add(author);
+            Items.Add(author);
             return Task.CompletedTask;
         }
     }
@@ -38,9 +38,9 @@ public class AuthorRepository : IAuthorRepository
     {
         lock (_lock)
         {
-            var itemIndex = _items.FindIndex(x => x.Id == author.Id);
+            var itemIndex = Items.FindIndex(x => x.Id == author.Id);
             if (itemIndex >= 0)
-                _items[itemIndex] = author;
+                Items[itemIndex] = author;
         
             return Task.CompletedTask;   
         }
@@ -50,9 +50,9 @@ public class AuthorRepository : IAuthorRepository
     {
         lock (_lock)
         {
-            var itemIndex = _items.FindIndex(x => x.Id == id);
+            var itemIndex = Items.FindIndex(x => x.Id == id);
             if (itemIndex >= 0)
-                _items.RemoveAt(itemIndex);
+                Items.RemoveAt(itemIndex);
         
             return Task.CompletedTask;   
         }
