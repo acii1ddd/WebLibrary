@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebLibrary.DAL", "src/WebLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebLibrary.BLL", "src/WebLibrary.BLL\WebLibrary.BLL.csproj", "{B7A1B686-6436-4825-966F-97A3BD3D2897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebLibrary.API.Contracts", "WebLibrary.API.Contracts\WebLibrary.API.Contracts.csproj", "{73A1738D-4981-4E45-A74E-60975D85BFCF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebLibrary.API.Contracts", "src/WebLibrary.API.Contracts\WebLibrary.API.Contracts.csproj", "{73A1738D-4981-4E45-A74E-60975D85BFCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
