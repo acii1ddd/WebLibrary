@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using WebLibrary.API.ExceptionHandlers;
+using WebLibrary.API.Extensions;
 using WebLibrary.BLL;
 using WebLibrary.DAL;
 
@@ -9,7 +9,7 @@ namespace WebLibrary.API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -32,12 +32,14 @@ public class Program
         builder.Services.AddExceptionHandler<CustomExceptionHandler>();
         
         var app = builder.Build();
-        
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
             app.MapScalarApiReference();
+
+            await app.ApplyMigrationsAsync();
         }
 
         app.UseExceptionHandler(opt => {});
@@ -46,6 +48,6 @@ public class Program
         app.UseHttpsRedirection();
         app.UseAuthorization();
 
-        app.Run();
+        await app.RunAsync();
     }
 }
