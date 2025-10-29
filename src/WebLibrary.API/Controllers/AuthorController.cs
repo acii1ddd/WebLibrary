@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using WebLibrary.API.Contracts.Contracts.Authors.Requests;
 using WebLibrary.BLL.Interfaces;
-using WebLibrary.DAL.Models;
 
 namespace WebLibrary.API.Controllers;
 
