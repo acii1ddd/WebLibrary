@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using WebLibrary.API.ExceptionHandlers;
 using WebLibrary.BLL;
@@ -22,10 +23,16 @@ public class Program
         builder.Services.AddServices();
         builder.Services.AddRepositories();
 
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("The default connection string is null.");
+
+        builder.Services.AddDbContext<LibraryContext>(opt
+            => opt.UseSqlServer(connectionString));
+        
         builder.Services.AddExceptionHandler<CustomExceptionHandler>();
         
         var app = builder.Build();
-
+        
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
