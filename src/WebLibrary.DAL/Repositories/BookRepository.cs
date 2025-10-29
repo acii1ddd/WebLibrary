@@ -1,60 +1,45 @@
+using Microsoft.EntityFrameworkCore;
 using WebLibrary.DAL.Interfaces;
 using WebLibrary.DAL.Models;
 
 namespace WebLibrary.DAL.Repositories;
 
-public class BookRepository : IBookRepository
+public class BookRepository(LibraryContext context): IBookRepository
 {
-    private static readonly List<Book> Items = [];
-    private readonly Lock _lock = new();
-
-    public Task<IEnumerable<Book>> GetAllAsync()
+    public async Task<IEnumerable<Book>> GetAllAsync()
     {
-        lock (_lock)
-        {
-            return Task.FromResult(Items.AsEnumerable());
-        }
+        return await context.Books
+            .AsNoTracking()
+            .ToListAsync();
     }
 
-    public Task<Book?> GetByIdAsync(Guid id)
+    public async Task<Book?> GetByIdAsync(Guid id)
     {
-        lock (_lock)
-        {
-            var item = Items.FirstOrDefault(x => x.Id == id);
-            return Task.FromResult(item);    
-        }
+        return await context.Books
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task AddAsync(Book book)
+    public async Task AddAsync(Book book)
     {
-        lock (_lock)
-        {
-            Items.Add(book);
-            return Task.CompletedTask;
-        }
-    }
-
-    public Task UpdateAsync(Book book)
-    {
-        lock (_lock)
-        {
-            var itemIndex = Items.FindIndex(x => x.Id == book.Id);
-            if (itemIndex >= 0)
-                Items[itemIndex] = book;
+        await context.Books.AddAsync(book);
         
-            return Task.CompletedTask;   
-        }
+        await context.SaveChangesAsync();
     }
 
-    public Task DeleteByIdAsync(Guid id)
+    public async Task UpdateAsync(Book book)
     {
-        lock (_lock)
-        {
-            var itemIndex = Items.FindIndex(x => x.Id == id);
-            if (itemIndex >= 0)
-                Items.RemoveAt(itemIndex);
+        context.Books.Update(book);
+
+        await context.SaveChangesAsync();
+    }
+
+    public async Task DeleteByIdAsync(Guid id)
+    {
+        var book = context.Books
+            .FirstOrDefault(x => x.Id == id);
         
-            return Task.CompletedTask;   
-        }
+        context.Books.Remove(book!);
+
+        await context.SaveChangesAsync();
     }
 }
