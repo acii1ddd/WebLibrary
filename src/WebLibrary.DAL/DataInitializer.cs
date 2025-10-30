@@ -28,7 +28,7 @@ public static class DataInitializer
         {
             Id = Guid.NewGuid(),
             Name = "Isaac Asimov",
-            DateOfBirth = new DateTime(1920, 1, 2),
+            DateOfBirth = new DateOnly(1920, 1, 2),
             Books = []
         };
 
@@ -36,7 +36,7 @@ public static class DataInitializer
         {
             Id = Guid.NewGuid(),
             Name = "Daniil Kazakov",
-            DateOfBirth = new DateTime(1920, 1, 2),
+            DateOfBirth = new DateOnly(1920, 1, 2),
             Books = []
         };
 
@@ -44,7 +44,7 @@ public static class DataInitializer
         {
             Id = Guid.NewGuid(),
             Name = "Jane Austen",
-            DateOfBirth = new DateTime(1775, 12, 16),
+            DateOfBirth = new DateOnly(1775, 12, 16),
             Books = []
         };
         

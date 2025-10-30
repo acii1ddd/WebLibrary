@@ -10,5 +10,5 @@ public interface IRepository<T> where T : class
     
     public Task UpdateAsync(T entity, CancellationToken ct);
     
-    public Task DeleteByIdAsync(Guid id, CancellationToken ct);
+    public Task DeleteAsync(T entity, CancellationToken ct);
 }

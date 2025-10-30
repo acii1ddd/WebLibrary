@@ -72,7 +72,7 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         if (author is null)
             throw new NotFoundException("Author", id);
         
-        await authorRepository.DeleteByIdAsync(id, ct);
+        await authorRepository.DeleteAsync(author, ct);
     }
     
     public async Task<IEnumerable<GetAuthorsWithBooksCountResponse>> 

@@ -73,6 +73,6 @@ public class BookService(IBookRepository bookRepository) : IBookService
         if (book is null)
             throw new NotFoundException("Book", id);
         
-        await bookRepository.DeleteByIdAsync(id, ct);
+        await bookRepository.DeleteAsync(book, ct);
     }
 }

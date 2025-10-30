@@ -34,12 +34,9 @@ public class AuthorRepository(LibraryContext context) : IAuthorRepository
         await context.SaveChangesAsync(ct);
     }
 
-    public async Task DeleteByIdAsync(Guid id, CancellationToken ct)
+    public async Task DeleteAsync(Author author, CancellationToken ct)
     {
-        var author = await context.Authors
-            .FirstOrDefaultAsync(x => x.Id == id, ct);
-        
-        context.Authors.Remove(author!);
+        context.Authors.Remove(author);
 
         await context.SaveChangesAsync(ct);
     }

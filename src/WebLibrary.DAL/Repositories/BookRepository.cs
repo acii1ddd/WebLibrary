@@ -35,12 +35,9 @@ public class BookRepository(LibraryContext context): IBookRepository
         await context.SaveChangesAsync(ct);
     }
 
-    public async Task DeleteByIdAsync(Guid id, CancellationToken ct)
+    public async Task DeleteAsync(Book book, CancellationToken ct)
     {
-        var book = await context.Books
-            .FirstOrDefaultAsync(x => x.Id == id, ct);
-        
-        context.Books.Remove(book!);
+        context.Books.Remove(book);
 
         await context.SaveChangesAsync(ct);
     }

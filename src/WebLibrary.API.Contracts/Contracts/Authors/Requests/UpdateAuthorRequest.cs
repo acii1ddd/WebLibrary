@@ -6,7 +6,7 @@ public class UpdateAuthorRequest
 {
     public string Name { get; set; } = string.Empty;
     
-    public DateTime DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; }
     
     public void Validate()
     {
@@ -17,7 +17,7 @@ public class UpdateAuthorRequest
             errors.Add("Name cannot be empty");
         }
         
-        if (DateOfBirth.ToUniversalTime() > DateTime.UtcNow)
+        if (DateOfBirth > DateOnly.FromDateTime(DateTime.UtcNow))
         {
             errors.Add("Date of birth cannot be in the future");
         }
