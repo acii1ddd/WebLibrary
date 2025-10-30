@@ -6,15 +6,16 @@ namespace WebLibrary.BLL.Interfaces;
 
 public interface IAuthorService
 {
-    public Task<IEnumerable<GetAuthorResponse>> GetAllAsync(string? name);
+    public Task<IEnumerable<GetAuthorResponse>> GetAllAsync(string? name, CancellationToken ct);
 
-    public Task<GetAuthorResponse> GetByIdAsync(Guid id);
+    public Task<GetAuthorResponse> GetByIdAsync(Guid id, CancellationToken ct);
     
-    public Task<Guid> AddAsync(AddAuthorRequest author);
+    public Task<Guid> AddAsync(AddAuthorRequest author, CancellationToken ct);
     
-    public Task UpdateAsync(UpdateAuthorRequest updateAuthorRequest, Guid id);
+    public Task UpdateAsync(UpdateAuthorRequest updateAuthorRequest, Guid id, CancellationToken ct);
     
-    public Task DeleteAsync(Guid id);
+    public Task DeleteAsync(Guid id, CancellationToken ct);
 
-    public Task<IEnumerable<GetAuthorsWithBooksCountResponse>> GetAuthorsWithBookCountsAsync();
+    public Task<IEnumerable<GetAuthorsWithBooksCountResponse>> 
+        GetAuthorsWithBookCountsAsync(CancellationToken ct);
 }

@@ -6,42 +6,42 @@ namespace WebLibrary.DAL.Repositories;
 
 public class BookRepository(LibraryContext context): IBookRepository
 {
-    public async Task<IEnumerable<Book>> GetAllAsync()
+    public async Task<IEnumerable<Book>> GetAllAsync(CancellationToken ct)
     {
         return await context.Books
             .AsNoTracking()
             .Include(x => x.Author)
-            .ToListAsync();
+            .ToListAsync(ct);
     }
 
-    public async Task<Book?> GetByIdAsync(Guid id)
+    public async Task<Book?> GetByIdAsync(Guid id, CancellationToken ct)
     {
         return await context.Books
             .Include(x => x.Author)
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .FirstOrDefaultAsync(x => x.Id == id, ct);
     }
 
-    public async Task AddAsync(Book book)
+    public async Task AddAsync(Book book, CancellationToken ct)
     {
-        await context.Books.AddAsync(book);
+        await context.Books.AddAsync(book, ct);
         
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(ct);
     }
 
-    public async Task UpdateAsync(Book book)
+    public async Task UpdateAsync(Book book, CancellationToken ct)
     {
         context.Books.Update(book);
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(ct);
     }
 
-    public async Task DeleteByIdAsync(Guid id)
+    public async Task DeleteByIdAsync(Guid id, CancellationToken ct)
     {
-        var book = context.Books
-            .FirstOrDefault(x => x.Id == id);
+        var book = await context.Books
+            .FirstOrDefaultAsync(x => x.Id == id, ct);
         
         context.Books.Remove(book!);
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(ct);
     }
 }

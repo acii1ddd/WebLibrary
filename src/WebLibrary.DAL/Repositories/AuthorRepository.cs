@@ -6,41 +6,41 @@ namespace WebLibrary.DAL.Repositories;
 
 public class AuthorRepository(LibraryContext context) : IAuthorRepository
 {
-    public async Task<IEnumerable<Author>> GetAllAsync()
+    public async Task<IEnumerable<Author>> GetAllAsync(CancellationToken ct)
     {
         return await context.Authors
             .AsNoTracking()
             .Include(x => x.Books)
-            .ToListAsync();
+            .ToListAsync(ct);
     }
 
-    public async Task<Author?> GetByIdAsync(Guid id)
+    public async Task<Author?> GetByIdAsync(Guid id, CancellationToken ct)
     {
         return await context.Authors
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .FirstOrDefaultAsync(x => x.Id == id, ct);
     }
 
-    public async Task AddAsync(Author author)
+    public async Task AddAsync(Author author, CancellationToken ct)
     {
-        await context.Authors.AddAsync(author);
+        await context.Authors.AddAsync(author, ct);
         
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(ct);
     }
 
-    public async Task UpdateAsync(Author author)
+    public async Task UpdateAsync(Author author, CancellationToken ct)
     {
         context.Authors.Update(author);
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(ct);
     }
 
-    public async Task DeleteByIdAsync(Guid id)
+    public async Task DeleteByIdAsync(Guid id, CancellationToken ct)
     {
-        var author = context.Authors
-            .FirstOrDefault(x => x.Id == id);
+        var author = await context.Authors
+            .FirstOrDefaultAsync(x => x.Id == id, ct);
         
         context.Authors.Remove(author!);
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(ct);
     }
 }

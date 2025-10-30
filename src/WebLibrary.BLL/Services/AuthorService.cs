@@ -10,9 +10,9 @@ namespace WebLibrary.BLL.Services;
 
 public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
 {
-    public async Task<IEnumerable<GetAuthorResponse>> GetAllAsync(string? name)
+    public async Task<IEnumerable<GetAuthorResponse>> GetAllAsync(string? name, CancellationToken ct)
     {
-        var authors = await authorRepository.GetAllAsync();
+        var authors = await authorRepository.GetAllAsync(ct);
 
         if (name is not null)
         {
@@ -23,9 +23,9 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         return authors.Adapt<IEnumerable<GetAuthorResponse>>();
     }
 
-    public async Task<GetAuthorResponse> GetByIdAsync(Guid id)
+    public async Task<GetAuthorResponse> GetByIdAsync(Guid id, CancellationToken ct)
     {
-        var author = await authorRepository.GetByIdAsync(id);
+        var author = await authorRepository.GetByIdAsync(id, ct);
 
         if (author == null)
             throw new NotFoundException("Author", id);
@@ -33,7 +33,7 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         return author.Adapt<GetAuthorResponse>();
     }
 
-    public async Task<Guid> AddAsync(AddAuthorRequest addAuthorRequest)
+    public async Task<Guid> AddAsync(AddAuthorRequest addAuthorRequest, CancellationToken ct)
     {
         addAuthorRequest.Validate();
         
@@ -44,16 +44,17 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
             DateOfBirth = addAuthorRequest.DateOfBirth
         };
         
-        await authorRepository.AddAsync(author);
+        await authorRepository.AddAsync(author, ct);
         
         return author.Id;
     }
 
-    public async Task UpdateAsync(UpdateAuthorRequest updateAuthorRequest, Guid id)
+    public async Task UpdateAsync(UpdateAuthorRequest updateAuthorRequest, Guid id, 
+        CancellationToken ct)
     {
         updateAuthorRequest.Validate();
         
-        var authorToUpdate = await authorRepository.GetByIdAsync(id);
+        var authorToUpdate = await authorRepository.GetByIdAsync(id, ct);
 
         if (authorToUpdate is null)
             throw new NotFoundException("Author", id);
@@ -61,22 +62,23 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         authorToUpdate.Name = updateAuthorRequest.Name;
         authorToUpdate.DateOfBirth = updateAuthorRequest.DateOfBirth;
     
-        await authorRepository.UpdateAsync(authorToUpdate);
+        await authorRepository.UpdateAsync(authorToUpdate, ct);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken ct)
     {
-        var author = await authorRepository.GetByIdAsync(id);
+        var author = await authorRepository.GetByIdAsync(id, ct);
 
         if (author is null)
             throw new NotFoundException("Author", id);
         
-        await authorRepository.DeleteByIdAsync(id);
+        await authorRepository.DeleteByIdAsync(id, ct);
     }
     
-    public async Task<IEnumerable<GetAuthorsWithBooksCountResponse>> GetAuthorsWithBookCountsAsync()
+    public async Task<IEnumerable<GetAuthorsWithBooksCountResponse>> 
+        GetAuthorsWithBookCountsAsync(CancellationToken ct)
     {
-        var authors = await authorRepository.GetAllAsync();
+        var authors = await authorRepository.GetAllAsync(ct);
 
         var authorsWithBookCount = authors
             .Select(x => new GetAuthorsWithBooksCountResponse

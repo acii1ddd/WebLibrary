@@ -10,9 +10,9 @@ namespace WebLibrary.BLL.Services;
 
 public class BookService(IBookRepository bookRepository) : IBookService
 {
-    public async Task<IEnumerable<GetBookResponse>> GetAllAsync(int? startYear)
+    public async Task<IEnumerable<GetBookResponse>> GetAllAsync(int? startYear, CancellationToken ct)
     {
-        var books = await bookRepository.GetAllAsync();
+        var books = await bookRepository.GetAllAsync(ct);
         
         if (startYear is not null)
         {
@@ -22,9 +22,9 @@ public class BookService(IBookRepository bookRepository) : IBookService
         return books.Adapt<IEnumerable<GetBookResponse>>();
     }
 
-    public async Task<GetBookResponse> GetByIdAsync(Guid id)
+    public async Task<GetBookResponse> GetByIdAsync(Guid id, CancellationToken ct)
     {
-        var book = await bookRepository.GetByIdAsync(id);
+        var book = await bookRepository.GetByIdAsync(id, ct);
 
         if (book is null)
             throw new NotFoundException("Book", id);
@@ -32,7 +32,7 @@ public class BookService(IBookRepository bookRepository) : IBookService
         return book.Adapt<GetBookResponse>();  
     }
 
-    public async Task<Guid> AddAsync(AddBookRequest addBookRequest)
+    public async Task<Guid> AddAsync(AddBookRequest addBookRequest, CancellationToken ct)
     {
         addBookRequest.Validate();
         
@@ -44,16 +44,17 @@ public class BookService(IBookRepository bookRepository) : IBookService
             AuthorId = addBookRequest.AuthorId
         };
         
-        await bookRepository.AddAsync(newBook);
+        await bookRepository.AddAsync(newBook, ct);
         
         return newBook.Id;
     }
 
-    public async Task UpdateAsync(UpdateBookRequest updateBookRequest, Guid id)
+    public async Task UpdateAsync(UpdateBookRequest updateBookRequest, Guid id, 
+        CancellationToken ct)
     {
         updateBookRequest.Validate();
         
-        var bookToUpdate = await bookRepository.GetByIdAsync(id);
+        var bookToUpdate = await bookRepository.GetByIdAsync(id, ct);
 
         if (bookToUpdate is null)
             throw new NotFoundException("Book", id);
@@ -62,16 +63,16 @@ public class BookService(IBookRepository bookRepository) : IBookService
         bookToUpdate.PublishedYear = updateBookRequest.PublishedYear;
         bookToUpdate.AuthorId = updateBookRequest.AuthorId;
         
-        await bookRepository.UpdateAsync(bookToUpdate);
+        await bookRepository.UpdateAsync(bookToUpdate, ct);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, CancellationToken ct)
     {
-        var book = await bookRepository.GetByIdAsync(id);
+        var book = await bookRepository.GetByIdAsync(id, ct);
 
         if (book is null)
             throw new NotFoundException("Book", id);
         
-        await bookRepository.DeleteByIdAsync(id);
+        await bookRepository.DeleteByIdAsync(id, ct);
     }
 }
