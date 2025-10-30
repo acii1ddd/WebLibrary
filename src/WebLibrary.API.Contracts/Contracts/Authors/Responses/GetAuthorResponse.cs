@@ -6,5 +6,5 @@ public class GetAuthorResponse
 
     public string Name { get; set; } = string.Empty;
     
-    public DateTime DateOfBirth { get; set; }
+    public DateOnly DateOfBirth { get; set; }
 }

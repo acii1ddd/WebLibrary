@@ -8,7 +8,5 @@ public class Book
     
     public int PublishedYear { get; set; }
 
-    public Author Author { get; set; } = null!;
-
-    public Guid AuthorId { get; set; }
+    public ICollection<Author> Authors { get; set; } = [];
 }

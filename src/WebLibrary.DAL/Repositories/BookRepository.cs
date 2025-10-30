@@ -10,14 +10,14 @@ public class BookRepository(LibraryContext context): IBookRepository
     {
         return await context.Books
             .AsNoTracking()
-            .Include(x => x.Author)
+            .Include(x => x.Authors)
             .ToListAsync(ct);
     }
 
     public async Task<Book?> GetByIdAsync(Guid id, CancellationToken ct)
     {
         return await context.Books
-            .Include(x => x.Author)
+            .Include(x => x.Authors)
             .FirstOrDefaultAsync(x => x.Id == id, ct);
     }
 

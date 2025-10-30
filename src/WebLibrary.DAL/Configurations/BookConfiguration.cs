@@ -18,9 +18,8 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
             .HasMaxLength(MaxLength).IsRequired();
         
         builder.Property(x => x.PublishedYear).IsRequired();
-        
-        builder.HasOne(x => x.Author)
-            .WithMany(x => x.Books)
-            .HasForeignKey(x => x.AuthorId);
+
+        builder.HasMany(x => x.Authors)
+            .WithMany(x => x.Books);
     }
 }

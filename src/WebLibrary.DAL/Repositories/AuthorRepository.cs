@@ -40,4 +40,11 @@ public class AuthorRepository(LibraryContext context) : IAuthorRepository
 
         await context.SaveChangesAsync(ct);
     }
+
+    public async Task<List<Author>> GetByIdsAsync(List<Guid> ids, CancellationToken ct)
+    {
+        return await context.Authors
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync(ct);
+    }
 }

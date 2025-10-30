@@ -8,7 +8,7 @@ public class AddAuthorRequest
     
     public DateOnly DateOfBirth { get; set; }
     
-    public void Validate()
+    public void ValidateAndThrow()
     {
         var errors = new List<string>();
         

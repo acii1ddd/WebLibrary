@@ -35,7 +35,7 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
 
     public async Task<Guid> AddAsync(AddAuthorRequest addAuthorRequest, CancellationToken ct)
     {
-        addAuthorRequest.Validate();
+        addAuthorRequest.ValidateAndThrow();
         
         var author = new Author
         {
@@ -52,7 +52,7 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
     public async Task UpdateAsync(UpdateAuthorRequest updateAuthorRequest, Guid id, 
         CancellationToken ct)
     {
-        updateAuthorRequest.Validate();
+        updateAuthorRequest.ValidateAndThrow();
         
         var authorToUpdate = await authorRepository.GetByIdAsync(id, ct);
 
@@ -80,6 +80,7 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
     {
         var authors = await authorRepository.GetAllAsync(ct);
 
+        // todo use mapster to map
         var authorsWithBookCount = authors
             .Select(x => new GetAuthorsWithBooksCountResponse
         {

@@ -19,9 +19,8 @@ public class AuthorConfiguration : IEntityTypeConfiguration<Author>
         
         builder.Property(x => x.DateOfBirth)
             .HasMaxLength(MaxLength).IsRequired();
-        
+
         builder.HasMany(x => x.Books)
-            .WithOne(x => x.Author)
-            .HasForeignKey(x => x.AuthorId);
+            .WithMany(x => x.Authors);
     }
 }
