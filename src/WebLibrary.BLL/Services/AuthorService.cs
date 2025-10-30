@@ -10,10 +10,16 @@ namespace WebLibrary.BLL.Services;
 
 public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
 {
-    public async Task<IEnumerable<GetAuthorResponse>> GetAllAsync()
+    public async Task<IEnumerable<GetAuthorResponse>> GetAllAsync(string? name)
     {
         var authors = await authorRepository.GetAllAsync();
 
+        if (name is not null)
+        {
+            authors = authors.Where(x => 
+                x.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
+        }
+        
         return authors.Adapt<IEnumerable<GetAuthorResponse>>();
     }
 

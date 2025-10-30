@@ -40,7 +40,8 @@ public class BookService(IBookRepository bookRepository) : IBookService
         {
             Id = Guid.NewGuid(),
             Title = addBookRequest.Title,
-            PublishedYear = addBookRequest.PublishedYear
+            PublishedYear = addBookRequest.PublishedYear,
+            AuthorId = addBookRequest.AuthorId
         };
         
         await bookRepository.AddAsync(newBook);
@@ -59,6 +60,7 @@ public class BookService(IBookRepository bookRepository) : IBookService
 
         bookToUpdate.Title = updateBookRequest.Title;
         bookToUpdate.PublishedYear = updateBookRequest.PublishedYear;
+        bookToUpdate.AuthorId = updateBookRequest.AuthorId;
         
         await bookRepository.UpdateAsync(bookToUpdate);
     }

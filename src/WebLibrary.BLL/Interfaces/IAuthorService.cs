@@ -6,7 +6,7 @@ namespace WebLibrary.BLL.Interfaces;
 
 public interface IAuthorService
 {
-    public Task<IEnumerable<GetAuthorResponse>> GetAllAsync();
+    public Task<IEnumerable<GetAuthorResponse>> GetAllAsync(string? name);
 
     public Task<GetAuthorResponse> GetByIdAsync(Guid id);
     
