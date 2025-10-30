@@ -1,4 +1,6 @@
+using Mapster;
 using WebLibrary.API.Contracts.Contracts.Books.Requests;
+using WebLibrary.API.Contracts.Contracts.Books.Responses;
 using WebLibrary.BLL.Exceptions;
 using WebLibrary.BLL.Interfaces;
 using WebLibrary.DAL.Interfaces;
@@ -8,19 +10,26 @@ namespace WebLibrary.BLL.Services;
 
 public class BookService(IBookRepository bookRepository) : IBookService
 {
-    public async Task<IEnumerable<Book>> GetAllAsync()
+    public async Task<IEnumerable<GetBookResponse>> GetAllAsync(int? startYear)
     {
-        return await bookRepository.GetAllAsync();
+        var books = await bookRepository.GetAllAsync();
+        
+        if (startYear is not null)
+        {
+            books = books.Where(x => x.PublishedYear > startYear);
+        }
+        
+        return books.Adapt<IEnumerable<GetBookResponse>>();
     }
 
-    public async Task<Book> GetByIdAsync(Guid id)
+    public async Task<GetBookResponse> GetByIdAsync(Guid id)
     {
         var book = await bookRepository.GetByIdAsync(id);
 
         if (book is null)
             throw new NotFoundException("Book", id);
         
-        return book;  
+        return book.Adapt<GetBookResponse>();  
     }
 
     public async Task<Guid> AddAsync(AddBookRequest addBookRequest)
@@ -43,19 +52,15 @@ public class BookService(IBookRepository bookRepository) : IBookService
     {
         updateBookRequest.Validate();
         
-        var book = await bookRepository.GetByIdAsync(id);
+        var bookToUpdate = await bookRepository.GetByIdAsync(id);
 
-        if (book is null)
+        if (bookToUpdate is null)
             throw new NotFoundException("Book", id);
+
+        bookToUpdate.Title = updateBookRequest.Title;
+        bookToUpdate.PublishedYear = updateBookRequest.PublishedYear;
         
-        var updatedBook = new Book
-        {
-            Id = id,
-            Title = updateBookRequest.Title,
-            PublishedYear = updateBookRequest.PublishedYear
-        };
-        
-        await bookRepository.UpdateAsync(updatedBook);
+        await bookRepository.UpdateAsync(bookToUpdate);
     }
 
     public async Task DeleteAsync(Guid id)

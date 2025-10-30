@@ -9,9 +9,9 @@ namespace WebLibrary.API.Controllers;
 public class BookController(IBookService bookService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync([FromQuery] int? startYear)
     {
-        var books = await bookService.GetAllAsync();
+        var books = await bookService.GetAllAsync(startYear);
         
         return Ok(books);
     }
