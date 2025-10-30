@@ -12,14 +12,8 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
 {
     public async Task<IEnumerable<GetAuthorResponse>> GetAllAsync(string? name, CancellationToken ct)
     {
-        var authors = await authorRepository.GetAllAsync(ct);
+        var authors = await authorRepository.GetAllAsync(name, ct);
 
-        if (name is not null)
-        {
-            authors = authors.Where(x => 
-                x.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
-        }
-        
         return authors.Adapt<IEnumerable<GetAuthorResponse>>();
     }
 
@@ -54,7 +48,7 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
     {
         updateAuthorRequest.ValidateAndThrow();
         
-        var authorToUpdate = await authorRepository.GetByIdAsync(id, ct);
+        var authorToUpdate = await authorRepository.GetByIdAsync(id, ct, true);
 
         if (authorToUpdate is null)
             throw new NotFoundException("Author", id);
@@ -67,7 +61,7 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
 
     public async Task DeleteAsync(Guid id, CancellationToken ct)
     {
-        var author = await authorRepository.GetByIdAsync(id, ct);
+        var author = await authorRepository.GetByIdAsync(id, ct, true);
 
         if (author is null)
             throw new NotFoundException("Author", id);
@@ -78,9 +72,8 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
     public async Task<IEnumerable<GetAuthorsWithBooksCountResponse>> 
         GetAuthorsWithBookCountsAsync(CancellationToken ct)
     {
-        var authors = await authorRepository.GetAllAsync(ct);
+        var authors = await authorRepository.GetAllAsync(null, ct);
 
-        // todo use mapster to map
         var authorsWithBookCount = authors
             .Select(x => new GetAuthorsWithBooksCountResponse
         {

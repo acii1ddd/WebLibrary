@@ -6,17 +6,40 @@ namespace WebLibrary.DAL.Repositories;
 
 public class BookRepository(LibraryContext context): IBookRepository
 {
-    public async Task<IEnumerable<Book>> GetAllAsync(CancellationToken ct)
+    public async Task<IEnumerable<Book>> GetAllAsync(int? startYear, CancellationToken ct)
     {
-        return await context.Books
+        var query = context.Books
             .AsNoTracking()
             .Include(x => x.Authors)
-            .ToListAsync(ct);
+            .AsQueryable();
+
+        if (startYear.HasValue)
+        {
+            query = query.Where(x => x.PublishedYear > startYear);
+        }
+        
+        return await query.ToListAsync(ct);
     }
 
-    public async Task<Book?> GetByIdAsync(Guid id, CancellationToken ct)
+    /// <summary>
+    /// Получение книги по индентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор книги для поиска</param>
+    /// <param name="ct">Токен отмены операции</param>
+    /// <param name="track">false - получаем сущность без отслеживания;
+    /// true - получаем сущность с отслеживанием;
+    /// значение по умолчанию - false</param>
+    /// <returns>Объект книги или null в случае не нахождения</returns>
+    public async Task<Book?> GetByIdAsync(Guid id, CancellationToken ct, bool track = false)
     {
-        return await context.Books
+        var query = context.Books.AsQueryable();
+
+        if (!track)
+        {
+            query = query.AsNoTracking();
+        }
+        
+        return await query
             .Include(x => x.Authors)
             .FirstOrDefaultAsync(x => x.Id == id, ct);
     }

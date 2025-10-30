@@ -15,12 +15,7 @@ public class BookService(
 {
     public async Task<IEnumerable<GetBookResponse>> GetAllAsync(int? startYear, CancellationToken ct)
     {
-        var books = await bookRepository.GetAllAsync(ct);
-        
-        if (startYear is not null)
-        {
-            books = books.Where(x => x.PublishedYear > startYear);
-        }
+        var books = await bookRepository.GetAllAsync(startYear, ct);
         
         return books.Adapt<IEnumerable<GetBookResponse>>();
     }
@@ -83,7 +78,7 @@ public class BookService(
         
         await ValidateAuthorsIdsAndThrowAsync(updateBookRequest.Authors, ct);
         
-        var bookToUpdate = await bookRepository.GetByIdAsync(id, ct);
+        var bookToUpdate = await bookRepository.GetByIdAsync(id, ct, true);
 
         if (bookToUpdate is null)
             throw new NotFoundException("Book", id);
@@ -100,7 +95,7 @@ public class BookService(
 
     public async Task DeleteAsync(Guid id, CancellationToken ct)
     {
-        var book = await bookRepository.GetByIdAsync(id, ct);
+        var book = await bookRepository.GetByIdAsync(id, ct, true);
 
         if (book is null)
             throw new NotFoundException("Book", id);
