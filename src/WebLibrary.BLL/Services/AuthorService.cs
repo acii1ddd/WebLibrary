@@ -5,16 +5,29 @@ using WebLibrary.BLL.Interfaces;
 using WebLibrary.DAL.Interfaces;
 using WebLibrary.DAL.Models;
 using Mapster;
+using WebLibrary.API.Contracts.Contracts;
 
 namespace WebLibrary.BLL.Services;
 
 public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
 {
-    public async Task<IEnumerable<GetAuthorResponse>> GetAllAsync(string? name, CancellationToken ct)
+    public async Task<PagedResult<GetAuthorResponse>> GetAllAsync(
+        PagedQueryParams @params, GetAuthorQueryFilters filters, CancellationToken ct)
     {
-        var authors = await authorRepository.GetAllAsync(name, ct);
+        @params.ValidateAndThrow();
+        
+        var (items, totalCount) = await authorRepository
+            .GetAllAsync(@params.PageNumber, @params.PageSize, filters.Name, ct);
 
-        return authors.Adapt<IEnumerable<GetAuthorResponse>>();
+        var pagedAuthors = new PagedResult<GetAuthorResponse>
+        {
+            Items = items.Adapt<IEnumerable<GetAuthorResponse>>(),
+            TotalCount = totalCount,
+            PageNumber = @params.PageNumber,
+            PageSize = @params.PageSize
+        };
+
+        return pagedAuthors;
     }
 
     public async Task<GetAuthorResponse> GetByIdAsync(Guid id, CancellationToken ct)
@@ -69,10 +82,13 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         await authorRepository.DeleteAsync(author, ct);
     }
     
-    public async Task<IEnumerable<GetAuthorsWithBooksCountResponse>> 
-        GetAuthorsWithBookCountsAsync(CancellationToken ct)
+    public async Task<PagedResult<GetAuthorsWithBooksCountResponse>>
+        GetAuthorsWithBookCountsAsync(PagedQueryParams @params, CancellationToken ct)
     {
-        var authors = await authorRepository.GetAllAsync(null, ct);
+        @params.ValidateAndThrow();
+        
+        var (authors, totalCount) = await authorRepository
+            .GetAllAsync(@params.PageNumber,@params.PageSize, null, ct);
 
         var authorsWithBookCount = authors
             .Select(x => new GetAuthorsWithBooksCountResponse
@@ -82,6 +98,14 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
             BookCount = x.Books.Count
         });
 
-        return authorsWithBookCount;
+        var pagedAuthors = new PagedResult<GetAuthorsWithBooksCountResponse>
+        {
+            Items = authorsWithBookCount,
+            TotalCount = totalCount,
+            PageNumber = @params.PageNumber,
+            PageSize = @params.PageSize
+        };
+        
+        return pagedAuthors;
     }
 }

@@ -1,12 +1,14 @@
+using WebLibrary.API.Contracts.Contracts;
 using WebLibrary.API.Contracts.Contracts.Authors.Requests;
 using WebLibrary.API.Contracts.Contracts.Authors.Responses;
-using WebLibrary.DAL.Models;
 
 namespace WebLibrary.BLL.Interfaces;
 
 public interface IAuthorService
 {
-    public Task<IEnumerable<GetAuthorResponse>> GetAllAsync(string? name, CancellationToken ct);
+    public Task<PagedResult<GetAuthorResponse>> GetAllAsync(
+        PagedQueryParams @params, GetAuthorQueryFilters filters, CancellationToken ct
+    );
 
     public Task<GetAuthorResponse> GetByIdAsync(Guid id, CancellationToken ct);
     
@@ -16,6 +18,6 @@ public interface IAuthorService
     
     public Task DeleteAsync(Guid id, CancellationToken ct);
 
-    public Task<IEnumerable<GetAuthorsWithBooksCountResponse>> 
-        GetAuthorsWithBookCountsAsync(CancellationToken ct);
+    public Task<PagedResult<GetAuthorsWithBooksCountResponse>>
+        GetAuthorsWithBookCountsAsync(PagedQueryParams @params, CancellationToken ct);
 }

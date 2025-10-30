@@ -6,7 +6,8 @@ namespace WebLibrary.DAL.Repositories;
 
 public class AuthorRepository(LibraryContext context) : IAuthorRepository
 {
-    public async Task<IEnumerable<Author>> GetAllAsync(string? name, CancellationToken ct)
+    public async Task<(IEnumerable<Author> Items, int TotalCount)> GetAllAsync(int pageNumber, 
+        int pageSize, string? name, CancellationToken ct)
     {
         var query = context.Authors.AsQueryable();
 
@@ -17,7 +18,14 @@ public class AuthorRepository(LibraryContext context) : IAuthorRepository
             );
         }
         
-        return await query.ToListAsync(ct);
+        var totalCount = await query.CountAsync(ct);
+        
+        query = query
+            .OrderBy(x => x.Name)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize);
+        
+        return (await query.ToListAsync(ct), totalCount);
     }
 
     /// <summary>
