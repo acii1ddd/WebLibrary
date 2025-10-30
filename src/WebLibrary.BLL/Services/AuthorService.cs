@@ -17,7 +17,7 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         @params.ValidateAndThrow();
         
         var (items, totalCount) = await authorRepository
-            .GetAllAsync(@params.PageNumber, @params.PageSize, filters.Name, ct);
+            .GetAllAsync(filters.Name, @params.PageNumber, @params.PageSize, ct);
 
         var pagedAuthors = new PagedResult<GetAuthorResponse>
         {
@@ -88,7 +88,7 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         @params.ValidateAndThrow();
         
         var (authors, totalCount) = await authorRepository
-            .GetAllAsync(@params.PageNumber,@params.PageSize, null, ct);
+            .GetAllAsync(null, @params.PageNumber,@params.PageSize, ct);
 
         var authorsWithBookCount = authors
             .Select(x => new GetAuthorsWithBooksCountResponse

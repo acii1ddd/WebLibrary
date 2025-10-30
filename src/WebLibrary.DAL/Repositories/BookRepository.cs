@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using WebLibrary.DAL.Interfaces;
 using WebLibrary.DAL.Models;
 
@@ -6,7 +7,8 @@ namespace WebLibrary.DAL.Repositories;
 
 public class BookRepository(LibraryContext context): IBookRepository
 {
-    public async Task<IEnumerable<Book>> GetAllAsync(int? startYear, CancellationToken ct)
+    public async Task<(IEnumerable<Book> Items, int TotalCount)> GetAllAsync(
+        int? startYear, int pageNumber, int pageSize, CancellationToken ct)
     {
         var query = context.Books
             .AsNoTracking()
@@ -18,7 +20,15 @@ public class BookRepository(LibraryContext context): IBookRepository
             query = query.Where(x => x.PublishedYear > startYear);
         }
         
-        return await query.ToListAsync(ct);
+        var totalCount = await query.CountAsync(ct);
+
+        var items = await query
+            .OrderBy(x => x.Title)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
+        
+        return (items, totalCount);
     }
 
     /// <summary>

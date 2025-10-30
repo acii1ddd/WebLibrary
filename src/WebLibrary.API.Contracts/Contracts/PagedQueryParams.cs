@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebLibrary.API.Contracts.Contracts.Authors.Requests;
+namespace WebLibrary.API.Contracts.Contracts;
 
 public class PagedQueryParams
 {

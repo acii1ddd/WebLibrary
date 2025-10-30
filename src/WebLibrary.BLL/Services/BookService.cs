@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Mapster;
+using WebLibrary.API.Contracts.Contracts;
 using WebLibrary.API.Contracts.Contracts.Books.Requests;
 using WebLibrary.API.Contracts.Contracts.Books.Responses;
 using WebLibrary.BLL.Exceptions;
@@ -13,11 +14,22 @@ public class BookService(
     IBookRepository bookRepository, 
     IAuthorRepository authorRepository) : IBookService
 {
-    public async Task<IEnumerable<GetBookResponse>> GetAllAsync(int? startYear, CancellationToken ct)
+    public async Task<PagedResult<GetBookResponse>> GetAllAsync(PagedQueryParams @params, int? startYear, CancellationToken ct)
     {
-        var books = await bookRepository.GetAllAsync(startYear, ct);
+        @params.ValidateAndThrow();
         
-        return books.Adapt<IEnumerable<GetBookResponse>>();
+        var (items, totalCount) = await bookRepository
+            .GetAllAsync(startYear, @params.PageNumber, @params.PageSize, ct);
+
+        var pagedBooks = new PagedResult<GetBookResponse>()
+        {
+            Items = items.Adapt<IEnumerable<GetBookResponse>>(),
+            TotalCount = totalCount,
+            PageNumber = @params.PageNumber,
+            PageSize = @params.PageSize
+        };
+
+        return pagedBooks;
     }
 
     public async Task<GetBookResponse> GetByIdAsync(Guid id, CancellationToken ct)
