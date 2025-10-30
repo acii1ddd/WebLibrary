@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WebLibrary.API.Contracts.Contracts;
 using WebLibrary.API.Contracts.Contracts.Books.Requests;
 using WebLibrary.BLL.Interfaces;
 
@@ -9,9 +10,11 @@ namespace WebLibrary.API.Controllers;
 public class BookController(IBookService bookService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync([FromQuery] int? startYear, CancellationToken ct)
+    public async Task<IActionResult> GetAllAsync([FromQuery] int? startYear, 
+        [FromQuery] PagedQueryParams @params, CancellationToken ct)
     {
-        var books = await bookService.GetAllAsync(startYear, ct);
+        var books = await bookService
+            .GetAllAsync(@params, startYear, ct);
         
         return Ok(books);
     }

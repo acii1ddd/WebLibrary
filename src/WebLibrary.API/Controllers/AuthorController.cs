@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WebLibrary.API.Contracts.Contracts;
 using WebLibrary.API.Contracts.Contracts.Authors.Requests;
 using WebLibrary.BLL.Interfaces;
 
@@ -9,9 +10,10 @@ namespace WebLibrary.API.Controllers;
 public class AuthorController(IAuthorService authorService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync([FromQuery] string? name, CancellationToken ct)
+    public async Task<IActionResult> GetAllAsync([FromQuery] PagedQueryParams @params, 
+        [FromQuery] GetAuthorQueryFilters filters, CancellationToken ct)
     {
-        var authors = await authorService.GetAllAsync(name, ct);
+        var authors = await authorService.GetAllAsync(@params, filters, ct);
         
         return Ok(authors);
     }
@@ -53,10 +55,12 @@ public class AuthorController(IAuthorService authorService) : ControllerBase
     }
 
     [HttpGet("books-count")]
-    public async Task<IActionResult> GetAuthorsWithBookCount(CancellationToken ct)
+    public async Task<IActionResult> GetAuthorsWithBookCount(
+        [FromQuery] PagedQueryParams @params, 
+        CancellationToken ct)
     {
         var result = await authorService
-            .GetAuthorsWithBookCountsAsync(ct);
+            .GetAuthorsWithBookCountsAsync(@params, ct);
         
         return Ok(result);
     }

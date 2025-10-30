@@ -10,7 +10,5 @@ public class GetBookResponse
     
     public int PublishedYear { get; set; }
 
-    public GetAuthorResponse Author { get; set; } = null!;
-
-    public Guid AuthorId { get; set; }
+    public List<GetAuthorResponse> Authors { get; set; } = [];
 }

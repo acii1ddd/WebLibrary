@@ -6,18 +6,48 @@ namespace WebLibrary.DAL.Repositories;
 
 public class AuthorRepository(LibraryContext context) : IAuthorRepository
 {
-    public async Task<IEnumerable<Author>> GetAllAsync(CancellationToken ct)
+    public async Task<(IEnumerable<Author> Items, int TotalCount)> GetAllAsync(
+         string? name, int pageNumber, int pageSize, CancellationToken ct)
     {
-        return await context.Authors
-            .AsNoTracking()
-            .Include(x => x.Books)
+        var query = context.Authors.AsNoTracking();
+
+        if (name is not null)
+        {
+            query = query.Where(
+                x => x.Name.ToLower().Contains(name.ToLower())
+            );
+        }
+        
+        var totalCount = await query.CountAsync(ct);
+
+        var items = await query
+            .OrderBy(x => x.Name)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(ct);
+        
+        return (items, totalCount);
     }
 
-    public async Task<Author?> GetByIdAsync(Guid id, CancellationToken ct)
+    /// <summary>
+    /// Получение автора по индентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор автора для поиска</param>
+    /// <param name="ct">Токен отмены операции</param>
+    /// <param name="track">false - получаем сущность без отслеживания;
+    /// true - получаем сущность с отслеживанием;
+    /// значение по умолчанию - false</param>
+    /// <returns>Объект автора или null в случае не нахождения</returns>
+    public async Task<Author?> GetByIdAsync(Guid id, CancellationToken ct, bool track = false)
     {
-        return await context.Authors
-            .FirstOrDefaultAsync(x => x.Id == id, ct);
+        var query = context.Authors.AsQueryable();
+
+        if (!false)
+        {
+            query = query.AsNoTracking();
+        }
+     
+        return await query.FirstOrDefaultAsync(x => x.Id == id, ct);
     }
 
     public async Task AddAsync(Author author, CancellationToken ct)
@@ -39,5 +69,12 @@ public class AuthorRepository(LibraryContext context) : IAuthorRepository
         context.Authors.Remove(author);
 
         await context.SaveChangesAsync(ct);
+    }
+
+    public async Task<List<Author>> GetByIdsAsync(List<Guid> ids, CancellationToken ct)
+    {
+        return await context.Authors
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync(ct);
     }
 }

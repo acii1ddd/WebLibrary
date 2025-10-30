@@ -1,4 +1,5 @@
 using WebLibrary.DAL;
+using WebLibrary.DAL.DataInitialization;
 
 namespace WebLibrary.API.Extensions;
 
