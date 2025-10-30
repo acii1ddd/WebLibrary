@@ -10,6 +10,7 @@ public class AuthorRepository(LibraryContext context) : IAuthorRepository
     {
         return await context.Authors
             .AsNoTracking()
+            .Include(x => x.Books)
             .ToListAsync();
     }
 

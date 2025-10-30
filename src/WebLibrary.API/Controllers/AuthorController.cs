@@ -49,4 +49,13 @@ public class AuthorController(IAuthorService authorService) : ControllerBase
         
         return NoContent();
     }
+
+    [HttpGet("books-count")]
+    public async Task<IActionResult> GetAuthorsWithBookCount()
+    {
+        var result = await authorService
+            .GetAuthorsWithBookCountsAsync();
+        
+        return Ok(result);
+    }
 }

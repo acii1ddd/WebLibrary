@@ -29,7 +29,7 @@ public class Program
         builder.Services.AddDbContext<LibraryContext>(opt
             => opt.UseSqlServer(connectionString));
         
-        builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         
         var app = builder.Build();
 

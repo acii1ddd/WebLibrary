@@ -62,10 +62,26 @@ public static class DataInitializer
             Id = Guid.NewGuid(), 
             Title = "Pride and Prejudice", 
             PublishedYear = 1813, 
-            AuthorId = author2.Id
+            AuthorId = author1.Id
         };
         
         var book3 = new Book
+        {
+            Id = Guid.NewGuid(), 
+            Title = "Kafka on the Shore", 
+            PublishedYear = 2002, 
+            AuthorId = author1.Id
+        };
+        
+        var book4 = new Book
+        {
+            Id = Guid.NewGuid(), 
+            Title = "Kafka on the Shore", 
+            PublishedYear = 2002, 
+            AuthorId = author2.Id
+        };
+        
+        var book5 = new Book
         {
             Id = Guid.NewGuid(), 
             Title = "Kafka on the Shore", 
@@ -77,13 +93,13 @@ public static class DataInitializer
         author1.Books.Add(book2);
         author1.Books.Add(book3);
         
-        author2.Books.Add(book2);
+        author2.Books.Add(book4);
         
-        author3.Books.Add(book3);
+        author3.Books.Add(book5);
         
         await context.Authors.AddRangeAsync(author1, author2, author3);
         
-        await context.Books.AddRangeAsync(book1, book2, book3);
+        await context.Books.AddRangeAsync(book1, book2, book3, book4, book5);
         
         await context.SaveChangesAsync();
     }
