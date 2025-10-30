@@ -1,60 +1,46 @@
+using Microsoft.EntityFrameworkCore;
 using WebLibrary.DAL.Interfaces;
 using WebLibrary.DAL.Models;
 
 namespace WebLibrary.DAL.Repositories;
 
-public class AuthorRepository : IAuthorRepository
+public class AuthorRepository(LibraryContext context) : IAuthorRepository
 {
-    private static readonly List<Author> Items = [];
-    private readonly Lock _lock = new();
-
-    public Task<IEnumerable<Author>> GetAllAsync()
+    public async Task<IEnumerable<Author>> GetAllAsync()
     {
-        lock (_lock)
-        {
-            return Task.FromResult(Items.AsEnumerable());
-        }
+        return await context.Authors
+            .AsNoTracking()
+            .Include(x => x.Books)
+            .ToListAsync();
     }
 
-    public Task<Author?> GetByIdAsync(Guid id)
+    public async Task<Author?> GetByIdAsync(Guid id)
     {
-        lock (_lock)
-        {
-            var item = Items.FirstOrDefault(x => x.Id == id);
-            return Task.FromResult(item);    
-        }
+        return await context.Authors
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task AddAsync(Author author)
+    public async Task AddAsync(Author author)
     {
-        lock (_lock)
-        {
-            Items.Add(author);
-            return Task.CompletedTask;
-        }
-    }
-
-    public Task UpdateAsync(Author author)
-    {
-        lock (_lock)
-        {
-            var itemIndex = Items.FindIndex(x => x.Id == author.Id);
-            if (itemIndex >= 0)
-                Items[itemIndex] = author;
+        await context.Authors.AddAsync(author);
         
-            return Task.CompletedTask;   
-        }
+        await context.SaveChangesAsync();
     }
 
-    public Task DeleteByIdAsync(Guid id)
+    public async Task UpdateAsync(Author author)
     {
-        lock (_lock)
-        {
-            var itemIndex = Items.FindIndex(x => x.Id == id);
-            if (itemIndex >= 0)
-                Items.RemoveAt(itemIndex);
+        context.Authors.Update(author);
+
+        await context.SaveChangesAsync();
+    }
+
+    public async Task DeleteByIdAsync(Guid id)
+    {
+        var author = context.Authors
+            .FirstOrDefault(x => x.Id == id);
         
-            return Task.CompletedTask;   
-        }
+        context.Authors.Remove(author!);
+
+        await context.SaveChangesAsync();
     }
 }

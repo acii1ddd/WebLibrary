@@ -6,7 +6,7 @@ using WebLibrary.BLL.Exceptions;
 
 namespace WebLibrary.API.ExceptionHandlers;
 
-public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IExceptionHandler
+public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
         HttpContext context, 

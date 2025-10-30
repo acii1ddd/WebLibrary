@@ -1,13 +1,13 @@
 using WebLibrary.API.Contracts.Contracts.Books.Requests;
-using WebLibrary.DAL.Models;
+using WebLibrary.API.Contracts.Contracts.Books.Responses;
 
 namespace WebLibrary.BLL.Interfaces;
 
 public interface IBookService
 {
-    public Task<IEnumerable<Book>> GetAllAsync();
+    public Task<IEnumerable<GetBookResponse>> GetAllAsync(int? startYear);
 
-    public Task<Book> GetByIdAsync(Guid id);
+    public Task<GetBookResponse> GetByIdAsync(Guid id);
     
     public Task<Guid> AddAsync(AddBookRequest author);
     

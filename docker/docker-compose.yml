@@ -1,0 +1,15 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    ports:
+      - ${SQL_LOCAL_PORT}:${SQL_CONTAINER_PORT}
+    volumes:
+      - sql-server_data:/var/opt/mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SA_PASS}
+      - MSSQL_PID=Developer
+      - MSSQL_TCP_PORT=${SQL_CONTAINER_PORT}
+
+volumes:
+  sql-server_data:

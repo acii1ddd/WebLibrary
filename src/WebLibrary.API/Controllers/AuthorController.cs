@@ -9,9 +9,9 @@ namespace WebLibrary.API.Controllers;
 public class AuthorController(IAuthorService authorService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync([FromQuery] string? name)
     {
-        var authors = await authorService.GetAllAsync();
+        var authors = await authorService.GetAllAsync(name);
         
         return Ok(authors);
     }
@@ -48,5 +48,14 @@ public class AuthorController(IAuthorService authorService) : ControllerBase
         await authorService.DeleteAsync(id);
         
         return NoContent();
+    }
+
+    [HttpGet("books-count")]
+    public async Task<IActionResult> GetAuthorsWithBookCount()
+    {
+        var result = await authorService
+            .GetAuthorsWithBookCountsAsync();
+        
+        return Ok(result);
     }
 }

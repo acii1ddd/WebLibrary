@@ -8,6 +8,8 @@ public class AddBookRequest
     
     public int PublishedYear { get; set; }
     
+    public Guid AuthorId { get; set; }
+    
     public void Validate()
     {
         var errors = new List<string>();
