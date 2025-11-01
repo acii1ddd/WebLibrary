@@ -1,60 +1,80 @@
+using Microsoft.EntityFrameworkCore;
 using WebLibrary.DAL.Interfaces;
 using WebLibrary.DAL.Models;
 
 namespace WebLibrary.DAL.Repositories;
 
-public class AuthorRepository : IAuthorRepository
+public class AuthorRepository(LibraryContext context) : IAuthorRepository
 {
-    private static readonly List<Author> Items = [];
-    private readonly Lock _lock = new();
-
-    public Task<IEnumerable<Author>> GetAllAsync()
+    public async Task<(IEnumerable<Author> Items, int TotalCount)> GetAllAsync(
+         string? name, int pageNumber, int pageSize, CancellationToken ct)
     {
-        lock (_lock)
+        var query = context.Authors.AsNoTracking();
+
+        if (name is not null)
         {
-            return Task.FromResult(Items.AsEnumerable());
+            query = query.Where(
+                x => x.Name.ToLower().Contains(name.ToLower())
+            );
         }
-    }
-
-    public Task<Author?> GetByIdAsync(Guid id)
-    {
-        lock (_lock)
-        {
-            var item = Items.FirstOrDefault(x => x.Id == id);
-            return Task.FromResult(item);    
-        }
-    }
-
-    public Task AddAsync(Author author)
-    {
-        lock (_lock)
-        {
-            Items.Add(author);
-            return Task.CompletedTask;
-        }
-    }
-
-    public Task UpdateAsync(Author author)
-    {
-        lock (_lock)
-        {
-            var itemIndex = Items.FindIndex(x => x.Id == author.Id);
-            if (itemIndex >= 0)
-                Items[itemIndex] = author;
         
-            return Task.CompletedTask;   
-        }
+        var totalCount = await query.CountAsync(ct);
+
+        var items = await query
+            .OrderBy(x => x.Name)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
+        
+        return (items, totalCount);
     }
 
-    public Task DeleteByIdAsync(Guid id)
+    /// <summary>
+    /// Получение автора по индентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор автора для поиска</param>
+    /// <param name="ct">Токен отмены операции</param>
+    /// <param name="track">false - получаем сущность без отслеживания;
+    /// true - получаем сущность с отслеживанием;
+    /// значение по умолчанию - false</param>
+    /// <returns>Объект автора или null в случае не нахождения</returns>
+    public async Task<Author?> GetByIdAsync(Guid id, CancellationToken ct, bool track = false)
     {
-        lock (_lock)
+        var query = context.Authors.AsQueryable();
+
+        if (!false)
         {
-            var itemIndex = Items.FindIndex(x => x.Id == id);
-            if (itemIndex >= 0)
-                Items.RemoveAt(itemIndex);
-        
-            return Task.CompletedTask;   
+            query = query.AsNoTracking();
         }
+     
+        return await query.FirstOrDefaultAsync(x => x.Id == id, ct);
+    }
+
+    public async Task AddAsync(Author author, CancellationToken ct)
+    {
+        await context.Authors.AddAsync(author, ct);
+        
+        await context.SaveChangesAsync(ct);
+    }
+
+    public async Task UpdateAsync(Author author, CancellationToken ct)
+    {
+        context.Authors.Update(author);
+
+        await context.SaveChangesAsync(ct);
+    }
+
+    public async Task DeleteAsync(Author author, CancellationToken ct)
+    {
+        context.Authors.Remove(author);
+
+        await context.SaveChangesAsync(ct);
+    }
+
+    public async Task<List<Author>> GetByIdsAsync(List<Guid> ids, CancellationToken ct)
+    {
+        return await context.Authors
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync(ct);
     }
 }

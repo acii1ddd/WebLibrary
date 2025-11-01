@@ -8,7 +8,9 @@ public class UpdateBookRequest
     
     public int PublishedYear { get; set; }
     
-    public void Validate()
+    public List<Guid> Authors { get; set; } = [];
+    
+    public void ValidateAndThrow()
     {
         var errors = new List<string>();
         

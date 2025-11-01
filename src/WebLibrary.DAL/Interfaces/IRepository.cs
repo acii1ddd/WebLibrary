@@ -2,13 +2,11 @@ namespace WebLibrary.DAL.Interfaces;
 
 public interface IRepository<T> where T : class
 {
-    public Task<IEnumerable<T>> GetAllAsync();
+    public Task<T?> GetByIdAsync(Guid id, CancellationToken ct, bool track = false);
     
-    public Task<T?> GetByIdAsync(Guid id);
+    public Task AddAsync(T entity, CancellationToken ct);
     
-    public Task AddAsync(T entity);
+    public Task UpdateAsync(T entity, CancellationToken ct);
     
-    public Task UpdateAsync(T entity);
-    
-    public Task DeleteByIdAsync(Guid id);
+    public Task DeleteAsync(T entity, CancellationToken ct);
 }
